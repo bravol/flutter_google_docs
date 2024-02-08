@@ -21,7 +21,8 @@ const DB = `mongodb+srv://bravol:CISSYbravol75@cluster0.gdnnpiw.mongodb.net/?ret
 // // define api(creating api using express)
 // app.post("/api/signup", (req, res) => {});
 // app.get("/api/get", (req, res) => {});
-// //GET, POST, UPDATE, DELETE
+// // GET, POST, UPDATE, DELETE
+
 mongoose
   .connect(DB)
   .then(() => {
@@ -37,4 +38,4 @@ mongoose
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`connected at port ${PORT}`);
   console.log("this is good");
-}); //listens to user server/starts our server
+});
