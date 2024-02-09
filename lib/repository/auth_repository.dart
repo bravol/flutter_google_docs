@@ -94,6 +94,11 @@ class AuthRepository {
             error = ErrorModel(error: null, data: newUser);
             _localStorageRepository.setToken(newUser.token);
             break;
+          default:
+            error = ErrorModel(
+              error: 'Error occurred during getting data: ${res.statusCode}',
+              data: null,
+            );
         }
       }
     } catch (e) {
@@ -108,5 +113,94 @@ class AuthRepository {
   void signOut() async {
     await _googleSignIn.signOut();
     _localStorageRepository.setToken('');
+  }
+
+  Future<ErrorModel> signUp(String name, String email, String password) async {
+    ErrorModel error = ErrorModel(
+      error: 'Some unexpected error occurred.',
+      data: null,
+    );
+    try {
+      // Send user registration data to the server
+      var res = await _client.post(Uri.parse('$host/api/signup'),
+          body: jsonEncode({
+            'name': name,
+            'email': email,
+            'username': password,
+          }),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          });
+
+      switch (res.statusCode) {
+        case 200:
+          final newUser = UserModel(
+            email: email,
+            name: name,
+            profilePic: '', // You can add a profile picture URL if applicable
+            uid: jsonDecode(res.body)['user']['_id'],
+            token: jsonDecode(res.body)['token'],
+          );
+          error = ErrorModel(error: null, data: newUser);
+          _localStorageRepository.setToken(newUser.token);
+          break;
+        default:
+          error = ErrorModel(
+            error: 'Error occurred during registration: ${res.statusCode}',
+            data: null,
+          );
+      }
+    } catch (e) {
+      error = ErrorModel(
+        error: 'Error occurred during registration: $e',
+        data: null,
+      );
+    }
+    return error;
+  }
+
+//sign in with email and password
+  Future<ErrorModel> signIn(String email, String password) async {
+    ErrorModel error = ErrorModel(
+      error: 'Some unexpected error occurred.',
+      data: null,
+    );
+    try {
+      // Send user login data to the server
+      var res = await _client.post(Uri.parse('$host/api/signin'),
+          body: jsonEncode({
+            'email': email,
+            'password': password,
+          }),
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          });
+
+      switch (res.statusCode) {
+        case 200:
+          final newUser = UserModel(
+            email: email,
+            name: jsonDecode(res.body)['user']['name'],
+            profilePic: '',
+            uid: jsonDecode(res.body)['user']['_id'],
+            token: jsonDecode(res.body)['token'],
+          );
+          error = ErrorModel(error: null, data: newUser);
+          _localStorageRepository.setToken(newUser.token);
+          break;
+        default:
+          error = ErrorModel(
+            error: 'Error occurred during login: ${res.statusCode}',
+            data: null,
+          );
+          break;
+      }
+    } catch (e) {
+      error = ErrorModel(
+        error: 'Error occurred during login: $e',
+        data: null,
+      );
+    }
+    return error;
   }
 }
