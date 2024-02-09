@@ -29,6 +29,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     getUserData();
   }
 
+//initially load the user data
   void getUserData() async {
     errorModel = await ref.read(authRepositoryProvider).getUserData();
 

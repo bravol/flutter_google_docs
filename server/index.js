@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const cors = require("cors");
 
-const PORT = process.env.PORT | 3001;
+const PORT = process.env.PORT | 3002;
 // const password = process.env.MONGO_DB_PASSWORD;
 
 const app = express();
@@ -19,8 +19,11 @@ app.use(authRouter);
 const DB = `mongodb+srv://bravol:CISSYbravol75@cluster0.gdnnpiw.mongodb.net/?retryWrites=true&w=majority`;
 
 // // define api(creating api using express)
+
 // app.post("/api/signup", (req, res) => {});
+
 // app.get("/api/get", (req, res) => {});
+
 // // GET, POST, UPDATE, DELETE
 
 mongoose
