@@ -72,4 +72,43 @@ class AuthRepository {
     }
     return error;
   }
+
+  //getting the user data
+
+  Future<ErrorModel> getUserData() async {
+    ErrorModel error =
+        ErrorModel(error: 'Some unexpected error occured.', data: null);
+
+    try {
+      String? token = await _localStorageRepository.getToken();
+
+      if (token != null) {
+        var res = await _client.get(Uri.parse('$host/'), headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          'x-auth-token': token,
+        });
+
+        switch (res.statusCode) {
+          case 200:
+            final newUser =
+                UserModel.fromJson(jsonEncode(jsonDecode(res.body)['user']))
+                    .copyWith(token: token);
+            error = ErrorModel(error: null, data: newUser);
+            _localStorageRepository.setToken(newUser.token);
+            break;
+          default:
+            throw 'Error Occured';
+        }
+      }
+    } catch (e) {
+      error = ErrorModel(error: e.toString(), data: null);
+    }
+    return error;
+  }
+
+  //sign out from app
+  void signOut() async {
+    await _googleSignIn.signOut();
+    _localStorageRepository.setToken('');
+  }
 }
