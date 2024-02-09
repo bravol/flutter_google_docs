@@ -1,11 +1,9 @@
 const mongoose = require("mongoose");
 
-//the structure of our user
 const userSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
-    // trim:true,
   },
   email: {
     type: String,
@@ -18,4 +16,4 @@ const userSchema = mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-module.exports = User; //esport to be public
+module.exports = User;
