@@ -4,8 +4,9 @@ const authRouter = require("./routes/auth");
 require("dotenv").config();
 
 const cors = require("cors");
+const documentRouter = require("./routes/document");
 
-const PORT = process.env.PORT | 3002;
+const PORT = process.env.PORT | 3001;
 // const password = process.env.MONGO_DB_PASSWORD;
 
 const app = express();
@@ -14,6 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(authRouter);
+app.use(documentRouter);
 //connecting our database
 // const DB = `mongodb+srv://bravol:${password}@cluster0.gdnnpiw.mongodb.net/?retryWrites=true&w=majority`;
 const DB = `mongodb+srv://bravol:CISSYbravol75@cluster0.gdnnpiw.mongodb.net/?retryWrites=true&w=majority`;

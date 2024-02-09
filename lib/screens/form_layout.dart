@@ -34,6 +34,14 @@ class _RegistrationFormState extends ConsumerState<RegistrationForm> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: _formKey,

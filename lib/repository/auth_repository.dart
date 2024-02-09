@@ -147,7 +147,7 @@ class AuthRepository {
       }
     } catch (e) {
       error = ErrorModel(
-        error: 'Error occurred during registration: $e',
+        error: e.toString(),
         data: null,
       );
     }
@@ -192,7 +192,7 @@ class AuthRepository {
       }
     } catch (e) {
       error = ErrorModel(
-        error: 'Error occurred during login: $e',
+        error: e.toString(),
         data: null,
       );
     }
