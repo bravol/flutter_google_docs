@@ -39,6 +39,7 @@ dependencies:
   http: ^1.2.0
   shared_preferences: ^2.2.2
   routemaster: ^1.0.1
+  flutter_quill: ^9.2.12
 
 dev_dependencies:
   flutter_test:
