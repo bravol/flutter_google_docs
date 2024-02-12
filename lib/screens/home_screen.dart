@@ -30,6 +30,11 @@ class HomeScreen extends ConsumerWidget {
     }
   }
 
+//going to the specific document
+  void navigateToDocument(BuildContext context, String documentId) {
+    Routemaster.of(context).push('/document/$documentId');
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider)!;
@@ -72,12 +77,15 @@ class HomeScreen extends ConsumerWidget {
                     DocumentModel document = snapshot.data!.data[index];
                     return SizedBox(
                       height: 50,
-                      child: Card(
-                        child: Center(
-                          child: Text(
-                            document.title,
-                            style: const TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.w500),
+                      child: InkWell(
+                        onTap: () => navigateToDocument(context, document.id),
+                        child: Card(
+                          child: Center(
+                            child: Text(
+                              document.title,
+                              style: const TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w500),
+                            ),
                           ),
                         ),
                       ),

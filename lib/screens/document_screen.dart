@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_google_docs/colors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DocumentScreen extends ConsumerStatefulWidget {
@@ -16,9 +17,23 @@ class DocumentScreen extends ConsumerStatefulWidget {
 class _DocumentScreenState extends ConsumerState<DocumentScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kWhiteColor,
+        elevation: 0,
+        actions: [
+          ElevatedButton.icon(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.lock,
+              size: 16,
+            ),
+            label: const Text('Share'),
+          ),
+        ],
+      ),
       body: Center(
-        child: Text('This is document screen'),
+        child: Text(widget.id),
       ),
     );
   }
