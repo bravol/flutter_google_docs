@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_docs/colors.dart';
+import 'package:flutter_google_docs/models/document_model.dart';
 import 'package:flutter_google_docs/models/error_model.dart';
 import 'package:flutter_google_docs/repository/auth_repository.dart';
 import 'package:flutter_google_docs/repository/document_repository.dart';
@@ -32,9 +33,14 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
 
   void fetchDocumentData() async {
     errorModel = await ref.read(documentRepositoryProvider).getDocumentById(
-          token: ref.read(userProvider)!.token,
-          id: widget.id,
+          ref.read(userProvider)!.token,
+          widget.id,
         );
+
+    if (errorModel!.data != null) {
+      titlecontroller.text = (errorModel!.data as DocumentModel).title;
+      setState(() {});
+    }
   }
 
   @override
