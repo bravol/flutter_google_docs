@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_google_docs/colors.dart';
 import 'package:flutter_google_docs/models/document_model.dart';
 import 'package:flutter_google_docs/models/error_model.dart';
@@ -35,12 +36,11 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
     fetchDocumentData();
 
     socketRepository.changeListener((data) {
-      // _controller?.compose(
-      //   // quill.Delta.fromJson(data['delta']),
-      //   // _controller?.selection ?? const TextSelection.collapsed(offset: 0),
-      //   // quill.ChangeSource.remote,
-
-      // );
+      _controller?.compose(
+        quill.Delta.fromJson(data['delta']),
+        _controller?.selection ?? const TextSelection.collapsed(offset: 0),
+        quill.ChangeSource.REMOTE,
+      );
     });
 
     Timer.periodic(const Duration(seconds: 2), (timer) {
@@ -63,7 +63,7 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
         document: errorModel!.data.content.isEmpty
             ? quill.Document()
             : quill.Document.fromDelta(
-                (errorModel!.data.content),
+                quill.Delta.fromJson(errorModel!.data.content),
               ),
         selection: const TextSelection.collapsed(offset: 0),
       );
@@ -71,9 +71,9 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
     }
 
     _controller!.document.changes.listen((event) {
-      if (event.source == quill.ChangeSource.local) {
+      if (event.item3 == quill.ChangeSource.LOCAL) {
         Map<String, dynamic> map = {
-          'delta': event.source,
+          'delta': event.item2,
           'room': widget.id,
         };
         socketRepository.typing(map);
@@ -105,7 +105,21 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Clipboard.setData(ClipboardData(
+                        text: 'http://localhost:3000/#/document/${widget.id}'))
+                    .then(
+                  (value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Link copied!',
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
               icon: const Icon(
                 Icons.lock,
                 size: 16,
@@ -159,16 +173,8 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
       body: Center(
         child: Column(
           children: [
-            Card(
-              child: quill.QuillToolbar.simple(
-                configurations: quill.QuillSimpleToolbarConfigurations(
-                  controller: _controller!,
-                  sharedConfigurations: const quill.QuillSharedConfigurations(
-                    locale: Locale('de'),
-                  ),
-                ),
-              ),
-            ),
+            const SizedBox(height: 10),
+            quill.QuillToolbar.basic(controller: _controller!),
             const SizedBox(height: 10),
             Expanded(
               child: SizedBox(
@@ -179,14 +185,8 @@ class _DocumentScreenState extends ConsumerState<DocumentScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(30.0),
                     child: quill.QuillEditor.basic(
-                      configurations: quill.QuillEditorConfigurations(
-                        controller: _controller!,
-                        readOnly: false,
-                        sharedConfigurations:
-                            const quill.QuillSharedConfigurations(
-                          locale: Locale('de'),
-                        ),
-                      ),
+                      controller: _controller!,
+                      readOnly: false,
                     ),
                   ),
                 ),
